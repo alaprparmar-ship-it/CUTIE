@@ -14,7 +14,7 @@
         #card {
             background: white; padding: 25px; border-radius: 30px;
             text-align: center; width: 85%; max-width: 350px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15); border: 2px solid white;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 2px solid white;
             position: relative; z-index: 10;
         }
         #mainImg { 
@@ -35,13 +35,15 @@
         #yesBtn { background: var(--primary-pink); color: white; transition: transform 0.2s; }
         #noBtn { background: #adb5bd; color: white; position: relative; z-index: 100; }
 
+        /* Big Hearts and Sparkles */
         .heart {
             position: absolute; color: var(--primary-pink);
             animation: floatUp 4s linear forwards; opacity: 0; z-index: 1;
         }
         @keyframes floatUp {
-            0% { transform: translateY(100vh) scale(1); opacity: 1; }
-            100% { transform: translateY(-10vh) scale(1.5); opacity: 0; }
+            0% { transform: translateY(110vh) scale(0.5); opacity: 1; }
+            50% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(2); opacity: 0; }
         }
     </style>
 </head>
@@ -49,6 +51,7 @@
 
     <div id="card">
         <img id="mainImg" src="https://i.postimg.cc/05zgvsQs/cutie-jpg.jpg" alt="Miss Cutie Pie">
+        
         <h1 id="text">Will you be my Valentine, <br>Miss Cutie Pie? 💖</h1>
         
         <div class="btn-container">
@@ -62,6 +65,7 @@
         const yesBtn = document.getElementById('yesBtn');
         let scale = 1;
 
+        // Runaway "No" Button Logic
         function moveButton() {
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
@@ -70,33 +74,47 @@
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
             
-            scale += 0.4;
+            // "Yes" button grows
+            scale += 0.45;
             yesBtn.style.transform = `scale(${scale})`;
         }
 
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
+            e.preventDefault(); 
             moveButton();
         });
 
+        // The Success Screen
         yesBtn.addEventListener('click', () => {
             document.getElementById('card').innerHTML = `
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6ZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqJm09Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" style="width:100%; border-radius:20px;">
-                <h1 style="color: #ff4d6d;">Finally! 🎉<br>I was starting to run out of room for that "Yes" button! ✨</h1>
+                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6ZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqJm09Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" style="width:100%; border-radius:20px; border: 4px solid #ff4d6d;">
+                <h1 style="color: #ff4d6d; font-size: 1.4rem; padding-top: 15px;">
+                    Finally! 🎉<br>I was starting to run out of room for that "Yes" button! ✨
+                </h1>
             `;
+            // Trigger the big heart storm
             setInterval(createHeart, 100);
         });
 
+        // Floating Big Hearts & Sparkles Generator
         function createHeart() {
+            const symbols = ['❤️', '💖', '✨', '💕', '✨'];
             const heart = document.createElement('div');
             heart.className = 'heart';
-            heart.innerHTML = Math.random() > 0.5 ? '❤️' : '💖'; 
+            heart.innerHTML = symbols[Math.floor(Math.random() * symbols.length)];
             heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+            // Random sizes for variety
+            const size = Math.floor(Math.random() * 30) + 20; 
+            heart.style.fontSize = size + 'px';
             document.body.appendChild(heart);
+            
+            // Cleanup
             setTimeout(() => heart.remove(), 4000);
         }
+
+        // Start a few hearts immediately for effect
+        setInterval(createHeart, 600);
     </script>
 </body>
 </html>
