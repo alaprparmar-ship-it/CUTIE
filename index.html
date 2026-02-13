@@ -8,41 +8,40 @@
         :root { --primary-pink: #ff4d6d; }
         body {
             margin: 0; height: 100vh; display: flex; align-items: center; justify-content: center;
-            background: #ffccd5; font-family: sans-serif; overflow: hidden;
+            background: #ffccd5; font-family: 'Arial', sans-serif; overflow: hidden; touch-action: none;
         }
 
-        /* Simplified Overlay */
         #musicOverlay {
             position: fixed; inset: 0; background: #ffccd5; 
             z-index: 1000; display: flex; flex-direction: column; 
-            align-items: center; justify-content: center;
+            align-items: center; justify-content: center; text-align: center;
         }
         #startBtn {
-            padding: 20px 30px; font-size: 1.2rem; background: white;
+            padding: 20px 30px; font-size: 1.3rem; background: white;
             color: var(--primary-pink); border: none; border-radius: 50px;
             font-weight: bold; box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         #card {
-            background: white; padding: 20px; border-radius: 25px;
+            background: white; padding: 25px; border-radius: 25px;
             text-align: center; width: 85%; max-width: 320px;
-            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            display: none; box-shadow: 0 10px 25px rgba(0,0,0,0.1); z-index: 10;
         }
-        #mainImg { width: 100%; height: 280px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; }
+        #mainImg { width: 100%; height: 280px; object-fit: cover; border-radius: 15px; margin-bottom: 15px; border: 3px solid var(--primary-pink); }
         
         .btn-container { 
             display: flex; justify-content: center; align-items: center; 
-            height: 100px; position: relative; 
+            gap: 20px; margin-top: 20px; min-height: 50px;
         }
         button { 
             padding: 12px 25px; font-size: 1rem; border: none; 
             border-radius: 50px; font-weight: bold; cursor: pointer;
         }
-        #yesBtn { background: var(--primary-pink); color: white; z-index: 10; transition: 0.2s; }
-        #noBtn { background: #adb5bd; color: white; position: absolute; z-index: 5; }
+        #yesBtn { background: var(--primary-pink); color: white; transition: 0.2s; }
+        #noBtn { background: #adb5bd; color: white; }
         
-        h1 { color: var(--primary-pink); font-size: 1.3rem; margin: 10px 0; }
-        .heart { position: absolute; color: var(--primary-pink); animation: float 3s linear forwards; }
+        h1 { color: var(--primary-pink); font-size: 1.4rem; margin: 10px 0; line-height: 1.2; }
+        .heart { position: absolute; color: var(--primary-pink); animation: float 3s linear forwards; pointer-events: none; }
         @keyframes float { to { transform: translateY(-100vh); opacity: 0; } }
     </style>
 </head>
@@ -50,11 +49,11 @@
 
     <div id="musicOverlay" onclick="startEverything()">
         <button id="startBtn">Open Your Surprise... 💌</button>
-        <p style="color: #ff4d6d; margin-top: 15px;">(Tap anywhere to start)</p>
+        <p style="color: #ff4d6d; margin-top: 15px; font-weight: bold;">(Turn sound up! 🔊)</p>
     </div>
 
     <audio id="bgMusic" preload="auto">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+        <source src="https://pagalsong.in/uploads/systemuploads/serials/Suno%20Na%20Suno%20Na%20-%20Chalte%20Chalte.mp3" type="audio/mpeg">
     </audio>
 
     <div id="card">
@@ -74,36 +73,36 @@
         const yesBtn = document.getElementById('yesBtn');
         let scale = 1;
 
-        // One function to handle everything on one tap
         function startEverything() {
-            music.currentTime = 26; // Your 0:26 start time
-            music.play().catch(e => console.log("Audio block"));
+            music.currentTime = 26; // Starts at your favorite part
+            music.play();
             overlay.style.display = 'none';
             card.style.display = 'block';
         }
 
-        // Improved runaway logic for mobile
         function moveNo() {
-            const x = Math.random() * (window.innerWidth - 80);
-            const y = Math.random() * (window.innerHeight - 40);
+            // Screen boundaries
+            const padding = 50;
+            const x = Math.random() * (window.innerWidth - (noBtn.offsetWidth + padding));
+            const y = Math.random() * (window.innerHeight - (noBtn.offsetHeight + padding));
+            
+            noBtn.style.position = 'fixed';
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
-            noBtn.style.position = 'fixed';
             
+            // Yes button grows
             scale += 0.4;
             yesBtn.style.transform = `scale(${scale})`;
         }
 
-        noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            moveNo();
-        });
+        // Mobile touch and Mouse hover
+        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveNo(); });
         noBtn.addEventListener('mouseover', moveNo);
 
         yesBtn.addEventListener('click', () => {
             document.getElementById('card').innerHTML = `
                 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6ZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqJm09Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" style="width:100%; border-radius:15px;">
-                <h1 style="color: #ff4d6d;">Finally! 🎉</h1>
+                <h1 style="color: #ff4d6d;">Finally! 🎉<br>Happy Valentine's Day! ✨</h1>
             `;
             setInterval(createHeart, 150);
         });
@@ -111,16 +110,20 @@
         function createHeart() {
             const h = document.createElement('div');
             h.className = 'heart';
-            h.innerHTML = '❤️';
+            h.innerHTML = Math.random() > 0.5 ? '❤️' : '💖';
             h.style.left = Math.random() * 100 + 'vw';
             h.style.top = '100vh';
+            h.style.fontSize = (Math.random() * 20 + 10) + 'px';
             document.body.appendChild(h);
             setTimeout(() => h.remove(), 3000);
         }
 
-        // Loop logic for 0:26 to 0:54
+        // Keep it in the 0:26 - 0:54 loop
         music.addEventListener('timeupdate', () => {
-            if (music.currentTime >= 54) music.currentTime = 26;
+            if (music.currentTime >= 54) {
+                music.currentTime = 26;
+                music.play();
+            }
         });
     </script>
 </body>
