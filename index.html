@@ -12,7 +12,6 @@
             font-family: 'Arial', sans-serif; overflow: hidden; touch-action: none;
         }
 
-        /* The Music Starter Overlay */
         #musicOverlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: #ffccd5; z-index: 1000; display: flex;
@@ -22,14 +21,14 @@
         #startBtn {
             padding: 20px 40px; font-size: 1.5rem; background: white;
             color: var(--primary-pink); border: none; border-radius: 50px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1); cursor: pointer; font-weight: bold;
         }
 
         #card {
             background: rgba(255, 255, 255, 0.9); padding: 25px; border-radius: 30px;
             text-align: center; width: 85%; max-width: 350px; z-index: 10;
             box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 2px solid white;
-            display: none; /* Hidden until button click */
+            display: none;
         }
         #mainImg { width: 100%; height: 300px; object-fit: cover; border-radius: 20px; margin-bottom: 15px; border: 4px solid var(--primary-pink); }
         .heart { position: absolute; color: var(--primary-pink); animation: floatUp 4s linear forwards; opacity: 0; z-index: 1; }
@@ -50,8 +49,8 @@
         <p style="color: #ff4d6d; margin-top: 20px; font-weight: bold;">(Turn your sound up! 🔊)</p>
     </div>
 
-    <audio id="bgMusic" loop>
-        <source src="https://www.chosic.com/wp-content/uploads/2021/04/Rain-and-Flowers-Soft-Piano-Music.mp3" type="audio/mpeg">
+    <audio id="bgMusic">
+        <source src="https://pagalfree.com/download/128-Suno%20Na%20Suno%20Na%20-%20Chalte%20Chalte%20128%20Kbps.mp3" type="audio/mpeg">
     </audio>
 
     <div id="card">
@@ -72,14 +71,25 @@
         const card = document.getElementById('card');
         let scale = 1;
 
-        // Unlock music and show the card
+        // Music Trimming Logic (0:26 to 0:54)
+        const startTime = 26;
+        const endTime = 54;
+
         startBtn.addEventListener('click', () => {
+            music.currentTime = startTime; // Start at 26s
             music.play();
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.display = 'none';
                 card.style.display = 'block';
             }, 500);
+        });
+
+        // Loop the specific section
+        music.addEventListener('timeupdate', () => {
+            if (music.currentTime >= endTime) {
+                music.currentTime = startTime;
+            }
         });
 
         function moveButton() {
