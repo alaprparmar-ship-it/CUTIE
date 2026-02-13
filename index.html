@@ -62,9 +62,7 @@
         const yesBtn = document.getElementById('yesBtn');
         let scale = 1;
 
-        // Function to move the "No" button
         function moveButton() {
-            // Get screen dimensions minus button size
             const x = Math.random() * (window.innerWidth - noBtn.offsetWidth);
             const y = Math.random() * (window.innerHeight - noBtn.offsetHeight);
             
@@ -72,28 +70,24 @@
             noBtn.style.left = x + 'px';
             noBtn.style.top = y + 'px';
             
-            // Make "Yes" grow so she eventually has to click it
             scale += 0.4;
             yesBtn.style.transform = `scale(${scale})`;
         }
 
-        // Works for both Desktop (Mouse) and Mobile (Touch)
         noBtn.addEventListener('mouseover', moveButton);
         noBtn.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // Prevents clicking the button on mobile
+            e.preventDefault();
             moveButton();
         });
 
-        // Success State
         yesBtn.addEventListener('click', () => {
             document.getElementById('card').innerHTML = `
                 <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6ZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqJm09Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" style="width:100%; border-radius:20px;">
-                <h1 style="color: #ff4d6d;">Finally! 🎉<br>I was starting to run out of room for that button! ✨</h1>
+                <h1 style="color: #ff4d6d;">Finally! 🎉<br>I was starting to run out of room for that "Yes" button! ✨</h1>
             `;
             setInterval(createHeart, 100);
         });
 
-        // Floating Hearts
         function createHeart() {
             const heart = document.createElement('div');
             heart.className = 'heart';
