@@ -49,8 +49,8 @@
         <p style="color: #ff4d6d; margin-top: 20px; font-weight: bold;">(Turn your sound up! 🔊)</p>
     </div>
 
-    <audio id="bgMusic">
-        <source src="https://pagalfree.com/download/128-Suno%20Na%20Suno%20Na%20-%20Chalte%20Chalte%20128%20Kbps.mp3" type="audio/mpeg">
+    <audio id="bgMusic" crossorigin="anonymous">
+        <source src="https://www.dropbox.com/scl/fi/v6s6650it4p18scwujpqi/Suno-Na-Suno-Na.mp3?rlkey=71h6lqj8u00l9h8629q8lyb4p&st=u6shz3v3&dl=1" type="audio/mpeg">
     </audio>
 
     <div id="card">
@@ -71,13 +71,24 @@
         const card = document.getElementById('card');
         let scale = 1;
 
-        // Music Trimming Logic (0:26 to 0:54)
+        // Settings for Suno Na Suno Na (0:26 - 0:54)
         const startTime = 26;
         const endTime = 54;
 
         startBtn.addEventListener('click', () => {
-            music.currentTime = startTime; // Start at 26s
-            music.play();
+            music.currentTime = startTime;
+            
+            // Try playing and handle potential mobile browser errors
+            const playPromise = music.play();
+            
+            if (playPromise !== undefined) {
+                playPromise.then(_ => {
+                    console.log("Music started!");
+                }).catch(error => {
+                    console.log("Playback failed. User might need to click again.");
+                });
+            }
+
             overlay.style.opacity = '0';
             setTimeout(() => {
                 overlay.style.display = 'none';
@@ -85,10 +96,11 @@
             }, 500);
         });
 
-        // Loop the specific section
+        // Looping 26s to 54s
         music.addEventListener('timeupdate', () => {
             if (music.currentTime >= endTime) {
                 music.currentTime = startTime;
+                music.play();
             }
         });
 
@@ -96,33 +108,4 @@
             const x = Math.random() * (window.innerWidth - 100);
             const y = Math.random() * (window.innerHeight - 50);
             noBtn.style.position = 'fixed';
-            noBtn.style.left = x + 'px';
-            noBtn.style.top = y + 'px';
-            scale += 0.35;
-            yesBtn.style.transform = `scale(${scale})`;
-        }
-
-        noBtn.addEventListener('touchstart', (e) => { e.preventDefault(); moveButton(); });
-        noBtn.addEventListener('mouseover', moveButton);
-
-        yesBtn.addEventListener('click', () => {
-            document.getElementById('card').innerHTML = `
-                <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnd6ZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqZzZqJm09Zw/KztT2c4u8mYYUiMKdJ/giphy.gif" style="width:100%; border-radius:20px;">
-                <h1 style="color: #ff4d6d;">Finally! 🎉<br>I was starting to run out of room for that "Yes" button! ✨</h1>
-            `;
-            setInterval(createHeart, 80);
-        });
-
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.className = 'heart';
-            heart.innerHTML = Math.random() > 0.5 ? '❤️' : '💖'; 
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
-            document.body.appendChild(heart);
-            setTimeout(() => heart.remove(), 4000);
-        }
-        setInterval(createHeart, 400);
-    </script>
-</body>
-</html>
+            noBtn.style.left = x +
